@@ -48,7 +48,7 @@ export default function AdminPage() {
         isEditing={isEditing}
       />
 
-      <ProductList products={products} cart={''} addToCart={handleEditClick} removeFromCart={''} />
+      <ProductList products={products} cart={null} addToCart={handleEditClick} removeFromCart={null} />
     </main>
   );
 }
