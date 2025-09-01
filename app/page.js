@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import ProductList from "@/components/ProductList";
 import Cart from "@/components/Cart";
 import CategoryTabs from "@/components/CategoryTabs";
+import { storage } from "@/utils/storage";
+import { fetchCategories, fetchProducts } from "@/utils/api";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -12,50 +14,21 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [search, setSearch] = useState("");
 
-  // ambil cart dari localStorage saat pertama render
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) setCart(JSON.parse(savedCart));
+    setCart(storage.get("cart", []));
   }, []);
 
-  // fetch categories
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const res = await fetch("/api/categories", { cache: "no-store" });
-        const data = await res.json();
-        setCategories(data);
-      } catch (err) {
-        console.error("Failed to fetch categories:", err);
-      }
-    }
-    fetchCategories();
+    fetchCategories().then(setCategories);
   }, []);
-
-  // fetch products
-  const fetchProducts = async (query = "", categoryId = "") => {
-    const params = new URLSearchParams();
-    if (query) params.append("name", query);
-    if (categoryId) params.append("categoryId", categoryId);
-
-    const api = `/api/products?${params.toString()}`;
-    try {
-      const res = await fetch(api, { cache: "no-store" });
-      const data = await res.json();
-      setProducts(data);
-    } catch (err) {
-      console.error("Failed to fetch products:", err);
-    }
-  };
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      fetchProducts(search, selectedCategory);
+      fetchProducts(search, selectedCategory).then(setProducts);
     }, 300);
     return () => clearTimeout(delayDebounce);
   }, [search, selectedCategory]);
 
-  // add item
   function addToCart(product) {
     setCart((prev) => {
       const exist = prev.find((item) => item.id === product.id);
@@ -67,7 +40,7 @@ export default function Home() {
       } else {
         updatedCart = [...prev, { ...product, qty: 1 }];
       }
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      storage.set("cart", updatedCart);
       return updatedCart;
     });
   }
@@ -80,7 +53,7 @@ export default function Home() {
           item.id === productId ? { ...item, qty: item.qty - 1 } : item
         )
         .filter((item) => item.qty > 0);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      storage.set("cart", updatedCart);
       return updatedCart;
     });
   }
@@ -106,11 +79,20 @@ export default function Home() {
       />
 
       {/* Product list */}
-      <ProductList products={products} cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} />
+      <ProductList
+        products={products}
+        cart={cart}
+        addToCart={addToCart}
+        removeFromCart={removeFromCart}
+      />
 
       {/* Cart */}
       {cart.length > 0 && (
-        <Cart cart={cart} addToCart={addToCart} removeFromCart={removeFromCart} />
+        <Cart
+          cart={cart}
+          addToCart={addToCart}
+          removeFromCart={removeFromCart}
+        />
       )}
     </main>
   );

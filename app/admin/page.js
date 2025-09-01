@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import ProductList from "@/components/ProductList";
 import ProductForm from "@/components/ProductForm";
+import { fetchCategories, fetchProducts,putProducts } from "@/utils/api";
 
 export default function AdminPage() {
   const [products, setProducts] = useState([]);
@@ -10,43 +11,22 @@ export default function AdminPage() {
 
   // Load products
   useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data));
+
+    fetchProducts(null, null).then(setProducts);
   }, []);
 
-  // Submit form (Add / Update)
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (isEditing) {
-      const res = await fetch("/api/products", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: form.id,
-          name: form.name,
-          price: parseInt(form.price),
-          image: form.image,
-          categoryName : form.categoryName,
-        }),
+      putProducts(form).then((updated) => {
+        setProducts(products.map((p) => (p.id === updated.id ? updated : p)));
+        setIsEditing(false);
       });
-      const updated = await res.json();
-      setProducts(products.map((p) => (p.id === updated.id ? updated : p)));
-      setIsEditing(false);
+
     } else {
-      const res = await fetch("/api/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          price: parseInt(form.price),
-          image: form.image,
-          categoryName : form.categoryName,
-        }),
+      postProducts(form).then((newProduct) => {
+        setProducts([...products, newProduct]);
       });
-      const newProduct = await res.json();
-      setProducts([...products, newProduct]);
     }
 
     setForm({ id: null, name: "", price: "", image: "", categoryName: "" });
@@ -68,10 +48,7 @@ export default function AdminPage() {
         isEditing={isEditing}
       />
 
-      <ProductList
-        products={products}
-        addToCart={handleEditClick} // klik produk untuk edit
-      />
+      <ProductList products={products} cart={null} addToCart={handleEditClick} removeFromCart={null} />
     </main>
   );
 }

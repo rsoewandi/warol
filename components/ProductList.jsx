@@ -4,7 +4,8 @@ export default function ProductList({ products, cart, addToCart, removeFromCart 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
       {products.map((product) => {
-        const cartItem = cart.find((item) => item.id === product.id);
+        const cartItem = cart?.find(item => item?.id === product?.id) ?? null;
+        
         return (
           <div
             key={product.id}
@@ -21,14 +22,13 @@ export default function ProductList({ products, cart, addToCart, removeFromCart 
             <p className="text-sm text-gray-500 mb-4">
               {product.price.toLocaleString()} IDR
             </p>
-
+            
             <button
               onClick={() => addToCart(product)}
               className="mt-auto w-full py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full text-sm font-medium shadow-md hover:from-green-600 hover:to-green-700 transition"
             >
-              Add to Cart
+              {cart ? ("Add to Cart") : ("Click Product")}
             </button>
-
             {cartItem && (
               <div className="mt-3 px-4 py-1 text-green-700 text-xs font-medium rounded-full shadow-sm">
                 
