@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import ProductList from "@/components/ProductList";
 import ProductForm from "@/components/ProductForm";
-import { fetchCategories, fetchProducts,putProducts } from "@/utils/api";
+import { fetchCategories, fetchProducts,putProducts,postProducts } from "@/utils/api";
 
 export default function AdminPage() {
   const [products, setProducts] = useState([]);
@@ -25,7 +25,7 @@ export default function AdminPage() {
 
     } else {
       postProducts(form).then((newProduct) => {
-        setProducts([...products, newProduct]);
+        setProducts([...products, newProduct.spec.args.data]);
       });
     }
 
@@ -48,7 +48,7 @@ export default function AdminPage() {
         isEditing={isEditing}
       />
 
-      <ProductList products={products} cart={null} addToCart={handleEditClick} removeFromCart={null} />
+      <ProductList products={products} cart={''} addToCart={handleEditClick} removeFromCart={''} />
     </main>
   );
 }
