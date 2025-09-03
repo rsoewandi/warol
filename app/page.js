@@ -79,13 +79,17 @@ export default function Home() {
       />
 
       {/* Product list */}
-      <ProductList
-        products={products}
-        cart={cart}
-        addToCart={addToCart}
-        removeFromCart={removeFromCart}
-      />
-
+      {products.length > 0 ? (
+        <ProductList
+          products={products}
+          cart={cart}
+          addToCart={addToCart}
+          removeFromCart={removeFromCart}
+        />
+      ) : (
+        <p className="text-gray-500 mt-4">Data kosong</p>
+      )}
+      
       {/* Cart */}
       {cart.length > 0 && (
         <Cart

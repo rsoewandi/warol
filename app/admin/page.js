@@ -3,16 +3,28 @@ import { useState, useEffect } from "react";
 import ProductList from "@/components/ProductList";
 import ProductForm from "@/components/ProductForm";
 import { fetchCategories, fetchProducts,putProducts,postProducts } from "@/utils/api";
+import { initSocket } from "@/utils/socketClient"; 
 
 export default function AdminPage() {
   const [products, setProducts] = useState([]);
   const [form, setForm] = useState({ id: null, name: "", price: "", image: "" });
   const [isEditing, setIsEditing] = useState(false);
 
-  // Load products
   useEffect(() => {
-
     fetchProducts(null, null).then(setProducts);
+    
+    const socket = initSocket();
+
+    // const audio = new Audio("/notif.wav");
+    socket.on("newProduct", (data) => {
+      // setProducts((prev) => [data, ...prev]);
+      console.log("data",data);
+      // audio.play().catch(err => {
+      //     console.error("Playback failed:", err);
+      // });
+    });
+
+    return () => socket.disconnect();
   }, []);
 
   const handleSubmit = async (e) => {

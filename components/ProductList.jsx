@@ -7,8 +7,7 @@ export default function ProductList({ products, cart, addToCart, removeFromCart 
         const cartItem = cart?.find(item => item?.id === product?.id) ?? null;
         
         return (
-          <div
-            key={product.id}
+          <div key={product.id}
             className="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center transition transform hover:scale-105 hover:shadow-xl"
           >
             <img
@@ -20,16 +19,9 @@ export default function ProductList({ products, cart, addToCart, removeFromCart 
               {product.name}
             </h3>
             <p className="text-sm text-gray-500 mb-4">
-              {product.price.toLocaleString()} IDR
+              {product.price?.toLocaleString()}
             </p>
-            
-            <button
-              onClick={() => addToCart(product)}
-              className="mt-auto w-full py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full text-sm font-medium shadow-md hover:from-green-600 hover:to-green-700 transition"
-            >
-              {cart ? ("Add to Cart") : ("Click Product")}
-            </button>
-            {cartItem && (
+            {cartItem ? (
               <div className="mt-3 px-4 py-1 text-green-700 text-xs font-medium rounded-full shadow-sm">
                 
               <button
@@ -46,7 +38,15 @@ export default function ProductList({ products, cart, addToCart, removeFromCart 
                 +
               </button>
               </div>
-            )}
+            ) : (
+            <button
+              onClick={() => addToCart(product)}
+              className="mt-auto w-full py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full text-sm font-medium shadow-md hover:from-green-600 hover:to-green-700 transition"
+            >
+              {cart ? 
+                ("Add to Cart") : ("Click Product")}
+            </button>
+          )}
           </div>
         );
       })}
