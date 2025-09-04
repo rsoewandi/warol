@@ -26,8 +26,8 @@ export default function Home() {
 
   useEffect(() => {
     async function checkStore() {
-      setLoading(true);
-      const store = await fetchStore(); // misalnya { isStore: true/false }
+      if(!isStore) setLoading(true);
+      const store = await fetchStore(); 
       setIsStore(store?.isstore ?? false);
 
       if (store?.isstore) {
