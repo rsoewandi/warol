@@ -63,7 +63,7 @@ export default function ProductList({ products, cart, addToCart, removeFromCart 
       {/* Modal Fullscreen Image */}
       {selectedImage && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 animate-fadeIn"
+          className="fixed inset-0 bg-black/20 flex items-center justify-center z-50 animate-fadeIn"
           onClick={() => setSelectedImage(null)}
         >
           <img
