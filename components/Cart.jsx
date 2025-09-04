@@ -1,19 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CartModal({ cart, addToCart, removeFromCart }) {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
   const totalPrice = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
-
+  function goToCheckout() {
+    router.push("/checkout");
+  }
   return (
     <>
       {/* Floating Cart Button */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-5 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2"
+        className="fixed bottom-5 right-5 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2"
       >
         🛒 <span className="font-medium">{totalItems}</span>
       </button>
@@ -86,7 +90,8 @@ export default function CartModal({ cart, addToCart, removeFromCart }) {
                   <span>Total Price</span>
                   <span>{totalPrice.toLocaleString()} IDR</span>
                 </div>
-                <button className="mt-5 w-full py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full text-sm font-medium shadow-md hover:from-blue-600 hover:to-blue-700 transition">
+                <button className="mt-5 w-full py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full text-sm font-medium shadow-md hover:from-green-600 hover:to-green-700 transition"
+                  onClick={() => goToCheckout()} >
                   Checkout
                 </button>
               </div>
