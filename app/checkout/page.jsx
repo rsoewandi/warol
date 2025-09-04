@@ -69,25 +69,9 @@ export default function CheckoutPage() {
           <form onSubmit={handleCheckout} className="space-y-3">
             <input
               type="text"
-              placeholder="Nama"
+              placeholder="Kavling Berapa"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              required
-              className="w-full border px-3 py-2 rounded"
-            />
-            <input
-              type="text"
-              placeholder="Alamat"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-              className="w-full border px-3 py-2 rounded"
-            />
-            <input
-              type="tel"
-              placeholder="No. Telepon"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
               required
               className="w-full border px-3 py-2 rounded"
             />

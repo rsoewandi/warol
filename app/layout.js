@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Warung Online",
-  description: "E-commerce sederhana",
+  description: "Warung Kelontong",
 };
 
 export default function RootLayout({ children }) {

@@ -5,7 +5,7 @@ import ProductList from "@/components/ProductList";
 import Cart from "@/components/Cart";
 import CategoryTabs from "@/components/CategoryTabs";
 import { storage } from "@/utils/storage";
-import { fetchCategories, fetchProducts } from "@/utils/api";
+import { fetchCategories, fetchProducts,fetchStore } from "@/utils/api";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -13,6 +13,8 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [search, setSearch] = useState("");
+  const [isStore, setIsStore] = useState(null); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setCart(storage.get("cart", []));
@@ -23,10 +25,20 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      fetchProducts(search, selectedCategory).then(setProducts);
-    }, 300);
-    return () => clearTimeout(delayDebounce);
+    async function checkStore() {
+      setLoading(true);
+      const store = await fetchStore(); // misalnya { isStore: true/false }
+      setIsStore(store?.isstore ?? false);
+
+      if (store?.isstore) {
+        // baru ambil kategori & produk
+        fetchCategories().then(setCategories);
+        fetchProducts(search, selectedCategory).then(setProducts);
+      }
+
+      setLoading(false);
+    }
+    checkStore();
   }, [search, selectedCategory]);
 
   function addToCart(product) {
@@ -56,6 +68,27 @@ export default function Home() {
       storage.set("cart", updatedCart);
       return updatedCart;
     });
+  }
+  
+  if (loading) {
+    return (<div className="flex flex-col items-center justify-center h-64">
+      <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+      <p className="mt-4 text-gray-600 font-medium animate-pulse">
+      </p>
+    </div>
+    )
+  }
+  if (isStore === false) {
+    return (
+      <main className="flex items-center justify-center h-64">
+        <div className="bg-red-50 border border-red-300 rounded-xl p-6 shadow-md animate-pulse text-center">
+          <p className="text-red-600 font-bold text-lg">
+            🚧 Halo Guys, Toko Sedang Offline 🚧
+          </p>
+          <p className="text-gray-600 mt-2">Silakan kembali lagi nanti.</p>
+        </div>
+      </main>
+    );
   }
 
   return (

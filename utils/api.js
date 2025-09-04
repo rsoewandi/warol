@@ -77,3 +77,33 @@ export async function postProducts(form) {
     return [];
   }
 }
+
+export async function postStore(val) {
+  try {
+      const res = await fetch("/api/store", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          isStore: val === "true"
+        }),
+      });
+      const newProduct = await res.json();
+      return newProduct;
+  } catch (err) {
+    console.error("Failed to fetch Store:", err);
+    return [];
+  }
+}
+
+export async function fetchStore() {
+  try {
+    const res = await fetch(`/api/store`, {
+      cache: "no-store",
+    });
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error("Failed to fetch store:", err);
+    return [];
+  }
+}
